@@ -21,3 +21,9 @@ def concatenate(video_clip_paths, output_path, method="compose"):
         final_clip = concatenate_videoclips(clips, method="compose")
     # write the output video file
     final_clip.write_videofile(output_path)
+    clip = VideoFileClip("out.mp4")
+    logo = (ImageClip("watermark.png")
+        .set_duration(clip.duration)
+        .set_position(("right", "bottom")))
+    final = CompositeVideoClip([clip, logo])
+    final.write_videofile("out_final.mp4")

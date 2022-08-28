@@ -6,11 +6,10 @@ for root, _, files in os.walk("assets"):
         for file in files:
             os.remove(os.path.join(root, file))
 
-reddit_fetch.scrape("videomemes")
-reddit_fetch.scrape("shitposting")
-reddit_fetch.scrape("funnyvideos")
-reddit_fetch.scrape("doodoofart")
-reddit_fetch.scrape("LaughterWorld")
+subreddits = ["videomemes", "shitposting", "funnyvideos", "doodoofart", "LaughterWorld"]
+
+for subreddit in subreddits:
+    reddit_fetch.scrape(subreddit)
 
 videos = list()
 
@@ -19,3 +18,4 @@ for root, _, files in os.walk("assets"):
             videos.append(f"{root}/{file}")
 
 movie.concatenate(videos, "out.mp4")
+os.remove("out.mp4")
