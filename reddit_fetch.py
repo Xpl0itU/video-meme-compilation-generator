@@ -1,4 +1,6 @@
 import praw
+import os
+import os.path
 from config import config
 from redvid import Downloader
 
