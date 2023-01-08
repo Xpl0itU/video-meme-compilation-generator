@@ -1,29 +1,7 @@
-from moviepy.editor import *
+import ffmpeg
 
-def concatenate(video_clip_paths, output_path, method="compose"):
-    """Concatenates several video files into one video file
-    and save it to `output_path`. Note that extension (mp4, etc.) must be added to `output_path`
-    `method` can be either 'compose' or 'reduce':
-        `reduce`: Reduce the quality of the video to the lowest quality on the list of `video_clip_paths`.
-        `compose`: type help(concatenate_videoclips) for the info"""
-    # create VideoFileClip object for each video file
-    clips = [VideoFileClip(c) for c in video_clip_paths]
-    if method == "reduce":
-        # calculate minimum width & height across all clips
-        min_height = min([c.h for c in clips])
-        min_width = min([c.w for c in clips])
-        # resize the videos to the minimum
-        clips = [c.resize(newsize=(min_width, min_height)) for c in clips]
-        # concatenate the final video
-        final_clip = concatenate_videoclips(clips)
-    elif method == "compose":
-        # concatenate the final video with the compose method provided by moviepy
-        final_clip = concatenate_videoclips(clips, method="compose")
-    # write the output video file
-    final_clip.write_videofile(output_path)
-    clip = VideoFileClip("out.mp4")
-    logo = (ImageClip("watermark.png")
-        .set_duration(clip.duration)
-        .set_position(("right", "bottom")))
-    final = CompositeVideoClip([clip, logo])
-    final.write_videofile("out_final.mp4")
+def concatenate_ffmpeg(video_clip_paths, output_path):
+    clips = [ffmpeg.input(c).filter("pad", width="max(iw,ih*(16/9))", height="ow/(16/9)", x="(ow-iw)/2", y="(oh-ih)/2").filter("scale", 1280, 720).filter("setsar", 1, 1) for c in video_clip_paths]
+    final_clip = ffmpeg.concat(*clips)
+    final_clip.overlay(ffmpeg.input("watermark.png")['v'].filter('scale', "iw-200", -1, force_original_aspect_ratio="decrease"), x="(main_w-overlay_w)", y="(main_h-overlay_h)/(main_h-overlay_h)")
+    final_clip.output(output_path).overwrite_output().run()

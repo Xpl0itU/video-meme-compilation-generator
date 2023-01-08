@@ -17,5 +17,4 @@ for root, _, files in os.walk("assets"):
         for file in files:
             videos.append(f"{root}/{file}")
 
-movie.concatenate(videos, "out.mp4")
-os.remove("out.mp4")
+movie.concatenate_ffmpeg(videos, "out.mp4")
