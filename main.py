@@ -6,7 +6,7 @@ for root, _, files in os.walk("assets"):
         for file in files:
             os.remove(os.path.join(root, file))
 
-subreddits = ["videomemes", "shitposting", "funnyvideos", "doodoofart", "LaughterWorld", "dankvideos"]
+subreddits = ["videomemes", "shitposting", "funnyvideos", "doodoofart", "LaughterWorld"]
 
 for subreddit in subreddits:
     reddit_fetch.scrape(subreddit)
